@@ -7,13 +7,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.Timer;
 import javax.swing.JPanel;
 
 //The Board aka the play area of the game where all the actions happen
-public class Board extends JPanel {
+public class Board extends JPanel implements KeyListener {
 
+	
+	
 	//declaring the variables
+	private static int FPS = 60;
+	private static int delay = 1000/FPS;
 	public static final int BOARD_WIDTH = 10;
 	public static final int BOARD_HEIGHT = 20;
 	public static final int SQUARE_SIZE = 30;
@@ -26,18 +33,29 @@ public class Board extends JPanel {
 				{null, Color.red,null}
 	};
 	 
+	//updating the position of tetromino x=row y=column
+	private int x = 4 , y= 0 ;
 	
-	
-	
+	//Delay the update time
+	private int regularspeed = 600;
+	private int fastspeed = 50;
+	private int delayUpdate = regularspeed;
+	private long beginUpdate;
 	//constructor
 	public Board() {
 
 		//Creating the Gameloop every half second event will happen.
-		ticker = new Timer(500, new ActionListener() {
+		ticker = new Timer(delay, new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Heloo");
+				if(System.currentTimeMillis()-beginUpdate > delayUpdate) {
+					y++;
+					beginUpdate = System.currentTimeMillis();
+				}
+				
+				// Everthing in the paintComponent will be updated/repainted
+				repaint();
 			}
 			
 		});
@@ -58,7 +76,8 @@ public class Board extends JPanel {
 				
 				if(tetromino[row][column] != null) {
 				g.setColor(tetromino[row][column]);
-				g.fillRect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+											// This will draw the tetromino and make it go down
+				g.fillRect(column * SQUARE_SIZE + x *SQUARE_SIZE, row * SQUARE_SIZE + y *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 				}
 			}
 		}
@@ -75,6 +94,33 @@ public class Board extends JPanel {
 			g.drawLine(column * SQUARE_SIZE,0,column * SQUARE_SIZE,SQUARE_SIZE* BOARD_HEIGHT);
 		}
 	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	// Down Arrow Key to speed up
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+			delayUpdate = fastspeed;
+		}
+		
+	}
+	//back to regular speed after release down arrow key
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+			delayUpdate = regularspeed;
+		}		
+	}
+	
+	//Getting key movement
+	
+
+
+
 }
 	
 

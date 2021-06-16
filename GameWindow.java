@@ -31,6 +31,7 @@ public class GameWindow {
 			board = new Board();
 			window.add(board);
 			window.setVisible(true);
+			window.addKeyListener(board);
 		}
 		
 		//main method

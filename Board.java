@@ -22,7 +22,7 @@ public class Board extends JPanel implements KeyListener {
 	private static int FPS = 60;
 	private static int delay = 1000/FPS;
 	public static final int BOARD_WIDTH = 10;
-	public static final int BOARD_HEIGHT = 20;
+	public static final int BOARD_HEIGHT = 21;
 	public static final int SQUARE_SIZE = 30;
 	private Timer ticker;
 	//a visual grid using the .Color
@@ -32,7 +32,6 @@ public class Board extends JPanel implements KeyListener {
 			{Color.red, Color.red, Color.red},
 				{null, Color.red,null}
 	};
-	 
 	//updating the position of tetromino x=row y=column
 	private int x = 4 , y= 0 ;
 	
@@ -41,15 +40,37 @@ public class Board extends JPanel implements KeyListener {
 	private int fastspeed = 50;
 	private int delayUpdate = regularspeed;
 	private long beginUpdate;
+	private int horizontalmove = 0;
+	private boolean collision = false;
+	
 	//constructor
 	public Board() {
 
 		//Creating the Gameloop every half second event will happen.
 		ticker = new Timer(delay, new ActionListener() {
-
+			
 			
 			public void actionPerformed(ActionEvent e) {
+				
+				if(collision){
+					return;
+				}
+				
+				//horizontal movement updates change x for each key pressed
+				//this creates boundarys to stop outside of board horizontally
+				if(!(x + horizontalmove + tetromino[0].length >10) && !(x + horizontalmove <0)){
+					x+= horizontalmove;
+				}
+				horizontalmove = 0;
+				x+= horizontalmove;
+				horizontalmove = 0;
+				
 				if(System.currentTimeMillis()-beginUpdate > delayUpdate) {
+					if(!(y + 1 + tetromino.length >= BOARD_HEIGHT)) {
+						y++;
+					}else {
+						collision = true;
+					}
 					y++;
 					beginUpdate = System.currentTimeMillis();
 				}
@@ -86,7 +107,7 @@ public class Board extends JPanel implements KeyListener {
 		//Setting up the matrix/grid for each tetrimino to be onttop off
 		g.setColor(Color.white);
 		//rows
-		for(int row = 0; row<BOARD_HEIGHT; row++) {
+		for(int row = 0; row<BOARD_HEIGHT + 1; row++) {
 			g.drawLine(0, SQUARE_SIZE * row, SQUARE_SIZE * BOARD_WIDTH, SQUARE_SIZE * row);
 		}
 		//columns
@@ -100,11 +121,15 @@ public class Board extends JPanel implements KeyListener {
 		// TODO Auto-generated method stub
 		
 	}
-	// Down Arrow Key to speed up
+	// Down Arrow Key to speed up //RIGHT to move right // left to move left
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_DOWN) {
 			delayUpdate = fastspeed;
+		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			horizontalmove = 1;
+		}else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			horizontalmove = -1;
 		}
 		
 	}

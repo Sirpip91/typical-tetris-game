@@ -5,6 +5,7 @@ package com.tetris.main;
 import java.awt.Color;
 //imports
 import java.awt.Graphics;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -27,24 +28,54 @@ public class Board extends JPanel implements KeyListener {
 	private Timer ticker;
 	//a visual grid using the .Color
 	private Color[][] board = new Color [BOARD_WIDTH][BOARD_HEIGHT];
-	//tetromino shape
-	private Color[][] tetromino = {
-			{Color.red, Color.red, Color.red},
-				{null, Color.red,null}
-	};
-	//updating the position of tetromino x=row y=column
-	private int x = 4 , y= 0 ;
+	//tetromino Tetrominos
+	// create Tetrominos
+	private Tetromino[] shape = new Tetromino[7];
 	
-	//Delay the update time
-	private int regularspeed = 600;
-	private int fastspeed = 50;
-	private int delayUpdate = regularspeed;
-	private long beginUpdate;
-	private int horizontalmove = 0;
-	private boolean collision = false;
+	 private Color[] colors = {Color.decode("#ed1c24"), Color.decode("#ff7f27"), Color.decode("#fff200"), 
+		        Color.decode("#22b14c"), Color.decode("#00a2e8"), Color.decode("#a349a4"), Color.decode("#3f48cc")};
+	
+	 private Tetromino currentShape;
+
 	
 	//constructor
 	public Board() {
+		
+		shape[0] = new Tetromino(new int[][]{
+	        {1, 1, 1, 1} 			// I shape;
+	    }, this, colors[0]);
+
+	    shape[1] = new Tetromino(new int[][]{
+	        {1, 1, 1},
+	        {0, 1, 0}, 				// T shape;
+	    }, this, colors[1]);
+
+	    shape[2] = new Tetromino(new int[][]{
+	        {1, 1, 1},
+	        {1, 0, 0}, 				// L shape;
+	    }, this, colors[2]);
+
+	    shape[3] = new Tetromino(new int[][]{
+	        {1, 1, 1},
+	        {0, 0, 1}, 				// J shape;
+	    }, this, colors[3]);
+
+	    shape[4] = new Tetromino(new int[][]{
+	        {0, 1, 1},
+	        {1, 1, 0}, 				// S shape;
+	    }, this, colors[4]);
+
+	    shape[5] = new Tetromino(new int[][]{
+	        {1, 1, 0},
+	        {0, 1, 1}, 				// Z shape;
+	    }, this, colors[5]);
+
+	    shape[6] = new Tetromino(new int[][]{
+	        {1, 1},
+	        {1, 1}, 				// O shape;
+	    }, this, colors[6]);
+
+	    currentShape = shape[0];
 
 		//Creating the Gameloop every half second event will happen.
 		ticker = new Timer(delay, new ActionListener() {
@@ -52,36 +83,20 @@ public class Board extends JPanel implements KeyListener {
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				if(collision){
-					return;
-				}
-				
-				//horizontal movement updates change x for each key pressed
-				//this creates boundarys to stop outside of board horizontally
-				if(!(x + horizontalmove + tetromino[0].length >10) && !(x + horizontalmove <0)){
-					x+= horizontalmove;
-				}
-				horizontalmove = 0;
-				x+= horizontalmove;
-				horizontalmove = 0;
-				
-				if(System.currentTimeMillis()-beginUpdate > delayUpdate) {
-					if(!(y + 1 + tetromino.length > BOARD_HEIGHT)) {
-						y++;
-					}else {
-						collision = true;
-					}
-					
-					beginUpdate = System.currentTimeMillis();
-				}
-				
-				// Everthing in the paintComponent will be updated/repainted
+				movement();
 				repaint();
 			}
 			
 		});
 		ticker.start();
 	}
+	
+	
+	private void movement() {
+			currentShape.movement();
+		}
+		
+	
 	
 	//Drawing stuff to the screen using Graphics g
 	protected void paintComponent(Graphics g) {
@@ -91,17 +106,7 @@ public class Board extends JPanel implements KeyListener {
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
 		
-		// Tetromino Drawing// Only draws if it is not null
-		for(int row = 0; row<tetromino.length; row++) {
-			for(int column = 0; column<tetromino[0].length; column++) {
-				
-				if(tetromino[row][column] != null) {
-				g.setColor(tetromino[row][column]);
-											// This will draw the tetromino and make it go down
-				g.fillRect(column * SQUARE_SIZE + x *SQUARE_SIZE, row * SQUARE_SIZE + y *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
-				}
-			}
-		}
+		currentShape.draw(g);
 		
 		
 		//Setting up the matrix/grid for each tetrimino to be onttop off
@@ -125,11 +130,11 @@ public class Board extends JPanel implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-			delayUpdate = fastspeed;
+			currentShape.fastspeed();
 		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			horizontalmove = 1;
+			currentShape.rightmovement();
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-			horizontalmove = -1;
+			currentShape.leftmovement();
 		}
 		
 	}
@@ -137,12 +142,9 @@ public class Board extends JPanel implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-			delayUpdate = regularspeed;
+			currentShape.normalspeed();
 		}		
 	}
-	
-	//Getting key movement
-	
 
 
 

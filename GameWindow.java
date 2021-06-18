@@ -16,6 +16,8 @@ public class GameWindow {
 		private Board board;
 		private JFrame window;
 		
+		
+		
 		//this has all things inside the GameWindow including itself
 		public GameWindow() {
 			
@@ -33,6 +35,8 @@ public class GameWindow {
 			window.setVisible(true);
 			window.addKeyListener(board);
 		}
+		
+		
 		
 		//main method
 		public static void main(String[] args) {

@@ -22,7 +22,7 @@ public class Board extends JPanel implements KeyListener {
 	private static int FPS = 60;
 	private static int delay = 1000/FPS;
 	public static final int BOARD_WIDTH = 10;
-	public static final int BOARD_HEIGHT = 21;
+	public static final int BOARD_HEIGHT = 20;
 	public static final int SQUARE_SIZE = 30;
 	private Timer ticker;
 	//a visual grid using the .Color
@@ -66,12 +66,12 @@ public class Board extends JPanel implements KeyListener {
 				horizontalmove = 0;
 				
 				if(System.currentTimeMillis()-beginUpdate > delayUpdate) {
-					if(!(y + 1 + tetromino.length >= BOARD_HEIGHT)) {
+					if(!(y + 1 + tetromino.length > BOARD_HEIGHT)) {
 						y++;
 					}else {
 						collision = true;
 					}
-					y++;
+					
 					beginUpdate = System.currentTimeMillis();
 				}
 				

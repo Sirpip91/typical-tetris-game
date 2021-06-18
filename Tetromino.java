@@ -20,21 +20,44 @@ public class Tetromino {
 		public static final int SQUARE_SIZE = 30;
 		
 		private int [][] cords;
-		
-	
+		private Board board;
+		private Color color;
 	
 
 		public Tetromino(int[][] cords, Board board, Color color) {
 					this.cords = cords;
+					this.board = board;
+					this.color = color;
 			}
-
-
+		
+		public void setX(int x) {
+			this.x = x;
+		}
+		public void setY(int y) {
+			this.y = y;
+		}
+		public void reset() {
+			this.x = 4;
+			this.y = 0;
+			collision = false;
+		}
+		
 		public void movement(){
 		if(collision){
+			
+			// after collision tetromino stays there through color the board
+			for(int row  = 0; row < cords.length; row++) {
+				for(int col = 0; col<cords[0].length; col++) {
+					if(cords[row][col] !=0 ) {
+						board.getBoard()[y + row][x + col] = color;
+					}
+				}	
+			}
+			board.cycleCurrentShape();
 			return;
 		}
 		
-		//horizontal movement updates change x for each key pressed
+		
 		//this creates boundarys to stop outside of board horizontally
 		if(!(x + horizontalmove + cords[0].length >10) && !(x + horizontalmove <0)){
 			x+= horizontalmove;

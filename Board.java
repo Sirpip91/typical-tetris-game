@@ -27,7 +27,7 @@ public class Board extends JPanel implements KeyListener {
 	public static final int SQUARE_SIZE = 30;
 	private Timer ticker;
 	//a visual grid using the .Color
-	private Color[][] board = new Color [BOARD_WIDTH][BOARD_HEIGHT];
+	private Color[][] board = new Color [BOARD_HEIGHT][BOARD_WIDTH];
 	//tetromino Tetrominos
 	// create Tetrominos
 	private Tetromino[] shape = new Tetromino[7];
@@ -95,7 +95,10 @@ public class Board extends JPanel implements KeyListener {
 	private void movement() {
 			currentShape.movement();
 		}
-		
+	public void cycleCurrentShape() {
+			currentShape = shape[1];
+			currentShape.reset();
+	}
 	
 	
 	//Drawing stuff to the screen using Graphics g
@@ -107,6 +110,16 @@ public class Board extends JPanel implements KeyListener {
 		
 		
 		currentShape.draw(g);
+		
+		for( int row = 0; row<BOARD_HEIGHT; row++) {
+			for(int column = 0; column<BOARD_WIDTH;column++) {
+				
+				if(board[row][column] != null) {
+					g.setColor(board[row][column]);
+					g.fillRect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+				}
+			}
+		}
 		
 		
 		//Setting up the matrix/grid for each tetrimino to be onttop off
@@ -121,6 +134,11 @@ public class Board extends JPanel implements KeyListener {
 		}
 	}
 
+	//geting board
+	public Color[][] getBoard(){
+		return board;
+	}
+	
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub

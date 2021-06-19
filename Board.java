@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 import javax.swing.Timer;
 import javax.swing.JPanel;
@@ -20,6 +21,7 @@ public class Board extends JPanel implements KeyListener {
 	
 	
 	//declaring the variables
+	
 	private static int FPS = 60;
 	private static int delay = 1000/FPS;
 	public static final int BOARD_WIDTH = 10;
@@ -36,6 +38,7 @@ public class Board extends JPanel implements KeyListener {
 		        Color.decode("#22b14c"), Color.decode("#00a2e8"), Color.decode("#a349a4"), Color.decode("#3f48cc")};
 	
 	 private Tetromino currentShape;
+	 Random tetris = new Random();
 
 	
 	//constructor
@@ -75,7 +78,7 @@ public class Board extends JPanel implements KeyListener {
 	        {1, 1}, 				// O shape;
 	    }, this, colors[6]);
 
-	    currentShape = shape[0];
+	    currentShape = shape[tetris.nextInt(shape.length)];
 
 		//Creating the Gameloop every half second event will happen.
 		ticker = new Timer(delay, new ActionListener() {
@@ -93,10 +96,14 @@ public class Board extends JPanel implements KeyListener {
 	
 	
 	private void movement() {
+		
 			currentShape.movement();
+			currentShape.normalspeed();
 		}
 	public void cycleCurrentShape() {
-			currentShape = shape[1];
+		//random tetris shape
+			
+			currentShape = shape[tetris.nextInt(shape.length)];
 			currentShape.reset();
 	}
 	

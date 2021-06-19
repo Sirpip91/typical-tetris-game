@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 public class GameWindow {
 		
 		//WINDOW DIMENSIONS
-		public static final int WIDTH = 455, HEIGHT = 640;
+		public static final int WIDTH = 455, HEIGHT = 700;
 		
 		
 		//Declaring variables

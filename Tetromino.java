@@ -50,6 +50,7 @@ public class Tetromino {
 				for(int col = 0; col<cords[0].length; col++) {
 					if(cords[row][col] !=0 ) {
 						board.getBoard()[y + row][x + col] = color;
+						
 					}
 				}	
 			}
@@ -59,16 +60,37 @@ public class Tetromino {
 		
 		
 		//this creates boundarys to stop outside of board horizontally
+		boolean moveX = true;
 		if(!(x + horizontalmove + cords[0].length >10) && !(x + horizontalmove <0)){
-			x+= horizontalmove;
+			for(int row = 0; row< cords.length; row++)
+				for(int col = 0; col< cords[row].length; col++) {
+					if(cords[row][col]!=0) {
+						if(board.getBoard()[y + row] [x + horizontalmove + col] != null) {
+							moveX = false;
+						}
+					}
+					
+					}if(moveX) {
+						x+= horizontalmove;
+				}
 		}
-		horizontalmove = 0;
-		x+= horizontalmove;
+		
 		horizontalmove = 0;
 		
+		
 		if(System.currentTimeMillis()-beginUpdate > delayUpdate) {
+			//VerticalMovment
 			if(!(y + 1 + cords.length > BOARD_HEIGHT)) {
-				y++;
+				for(int row = 0; row<cords.length; row++)
+					for(int col = 0; col < cords[row].length; col++)
+						if(cords[row][col] != 0) {
+							if(board.getBoard()[y + 1 + row][x + horizontalmove + col] != null) {
+								collision = true;
+							}	
+					}
+					if(!collision) {
+						y++;
+					}
 			}else {
 				collision = true;
 			}
@@ -83,7 +105,7 @@ public class Tetromino {
 				for(int column = 0; column<cords[0].length; column++) {
 					
 					if(cords[row][column] != 0) {
-					g.setColor(Color.red);
+					g.setColor(color);
 												// This will draw the tetromino and make it go down
 					g.fillRect(column * SQUARE_SIZE + x *SQUARE_SIZE, row * SQUARE_SIZE + y *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 					}

@@ -2,6 +2,11 @@ package com.tetris.main;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.IOException;
+
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 
 public class Tetromino {
 
@@ -22,8 +27,11 @@ public class Tetromino {
 		private int [][] cords;
 		private Board board;
 		private Color color;
-	
-
+		private Sounds sound;
+		
+		
+		
+		
 		public Tetromino(int[][] cords, Board board, Color color) {
 					this.cords = cords;
 					this.board = board;
@@ -54,8 +62,11 @@ public class Tetromino {
 					}
 				}	
 			}
+			checkLine();
 			board.cycleCurrentShape();
+			
 			return;
+			
 		}
 		
 		
@@ -99,6 +110,86 @@ public class Tetromino {
 		}
 		}
 		
+		//TETRIS!!!
+		//checks if each col/square is filled if the entire row is filled it will clear and move tetrominos down.
+		private void checkLine() {
+			int bottomLine = board.getBoard().length - 1;
+			for(int topLine = board.getBoard().length -1; topLine > 0; topLine--) {
+				int count  = 0;
+				for(int col = 0; col<board.getBoard()[0].length; col++) {
+					if(board.getBoard()[topLine][col] != null) {
+						count++;
+						if(count == 10) {
+							//This will play tetris sound
+							try {
+								Sounds.audio();
+							} catch (UnsupportedAudioFileException e1) {
+								
+								e1.printStackTrace();
+							} catch (IOException e1) {
+				
+								e1.printStackTrace();
+							} catch (LineUnavailableException e1) {
+								
+								e1.printStackTrace();
+							}
+						}
+					}
+					board.getBoard()[bottomLine][col] = board.getBoard()[topLine][col];
+					}
+					if(count<board.getBoard()[0].length) {
+						bottomLine--;
+						
+				}
+			}
+		}
+		
+		//rotation
+		public void rotateTetromino() {
+			int[][] rotatedTetromino = flipMatrix(cords);
+			reverseRows(rotatedTetromino);
+			
+			
+			//Checking if too close to wall
+			if((x + rotatedTetromino[0].length >Board.BOARD_WIDTH) || (y + rotatedTetromino.length > Board.BOARD_HEIGHT ))
+				return;
+			cords = rotatedTetromino;
+			
+			//Checking if it will rotate into another shape.
+			//It will check all shapes !=0, 
+			
+			for(int row = 0; row < rotatedTetromino.length; row++) {
+				for(int col = 0; col < rotatedTetromino[row].length; col++) {
+					if(rotatedTetromino[row][col] != 0) {
+						if(board.getBoard() [y+row] [x+col] != null) {
+							return;
+						}
+					}
+				}
+			}
+		}
+		
+		
+		//flipping the matrix of shape
+		private int[][] flipMatrix(int [][] matrix) {
+			int[][] temp = new int [matrix[0].length][matrix.length];
+			for(int row = 0; row < matrix.length; row++) {
+				for (int col = 0; col<matrix[0].length; col++) {
+					temp[col][row] = matrix[row][col];
+				}
+			}
+			return temp;
+		}
+		//using the arrays index to flip and swap.
+		private void reverseRows(int[][] matrix){
+			int middle = matrix.length / 2;
+			for(int row = 0; row<middle; row ++) {
+				int[] temp = matrix[row];
+				matrix[row] = matrix[matrix.length -row - 1];
+				matrix[matrix.length - row - 1] = temp;
+			}
+		}
+		
 		public void draw(Graphics g) {
 			// Tetromino Drawing// Only draws if it is not null
 			for(int row = 0; row<cords.length; row++) {
@@ -113,6 +204,11 @@ public class Tetromino {
 			}
 		}
 		
+		public int [][] getCords(){
+			return cords;
+		}
+		
+		
 		//Key movement
 		public void fastspeed() {
 			delayUpdate = fastspeed;
@@ -125,6 +221,15 @@ public class Tetromino {
 		}
 		public void leftmovement() {
 			horizontalmove = -1;
+		}
+
+		public int getX() {
+			return x;
+			
+		}
+
+		public int getY() {
+			return y;
 		}
 	
 }

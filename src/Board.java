@@ -11,10 +11,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
 import javax.swing.Timer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
@@ -29,10 +34,10 @@ public class Board extends JPanel implements KeyListener {
 	public static int GAME_PLAY = 0;
 	public static int GAME_PAUSE = 1;
 	public static int GAME_OVER = 2;
+	public static int score = 0;
 	
 	private int game = GAME_PLAY;
-	
-	
+	public  boolean pause = false;
 	private static int FPS = 60;
 	private static int delay = 1000/FPS;
 	public static final int BOARD_WIDTH = 10;
@@ -48,7 +53,6 @@ public class Board extends JPanel implements KeyListener {
 	private Color[] colors = {Color.decode("#ed1c24"), Color.decode("#ff7f27"), Color.decode("#fff200"), 
 		        Color.decode("#22b14c"), Color.decode("#00a2e8"), Color.decode("#a349a4"), Color.decode("#3f48cc")};
 
-	
 	 Sounds sound = new Sounds();
 	 private Tetromino currentShape;
 	 Random tetris = new Random();
@@ -56,7 +60,6 @@ public class Board extends JPanel implements KeyListener {
 	
 	//constructor
 	public Board() {
-		
 		shape[0] = new Tetromino(new int[][]{
 	        {1, 1, 1, 1} 			// I shape;
 	    }, this, colors[0]);
@@ -105,6 +108,7 @@ public class Board extends JPanel implements KeyListener {
 			
 		});
 		ticker.start();
+		
 	}
 	
 	
@@ -150,11 +154,18 @@ public class Board extends JPanel implements KeyListener {
 					g.fillRect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 				}
 			}
+			//Score
+			g.setColor(Color.white);
+			g.setFont(new Font("TimesRoman", Font.BOLD, 30));
+			
+			g.drawString("Score: " + score , 330, 100);
+			
 			
 			if(game == GAME_OVER) {
 			g.setColor(Color.white);
 			g.setFont(new Font("TimesRoman", Font.BOLD , 30));
-			g.drawString("GAME OVER ", 330, 50);
+			g.drawString("GAME OVER\n PRESS SPACE TO RESTART ", 330, 50);
+			
 			}
 			
 			if(game == GAME_PAUSE) {
@@ -225,10 +236,8 @@ public class Board extends JPanel implements KeyListener {
 					game = GAME_PLAY;
 				}
 			}
-		}
+		}	
 
-		
-	
 	//back to regular speed after release down arrow key
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -237,8 +246,7 @@ public class Board extends JPanel implements KeyListener {
 		}		
 	}
 
+	}
 
-
-}
 	
 

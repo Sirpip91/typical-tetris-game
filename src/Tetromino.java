@@ -24,10 +24,11 @@ public class Tetromino {
 		public static final int BOARD_HEIGHT = 20;
 		public static final int SQUARE_SIZE = 30;
 		
+		
 		private int [][] cords;
 		private Board board;
 		private Color color;
-		private Sounds sound;
+		
 		
 		
 		
@@ -120,6 +121,8 @@ public class Tetromino {
 					if(board.getBoard()[topLine][col] != null) {
 						count++;
 						if(count == 10) {
+							//increase points
+							Board.score += 100;
 							//This will play tetris sound
 							try {
 								Sounds.audio();

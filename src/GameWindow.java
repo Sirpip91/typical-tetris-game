@@ -2,6 +2,11 @@
 //package
 package com.tetris.main;
 
+import java.awt.Component;
+import java.io.IOException;
+
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 //imports
 import javax.swing.JFrame;
 
@@ -15,6 +20,7 @@ public class GameWindow {
 		//Declaring variables
 		private Board board;
 		private JFrame window;
+		private Sounds sounds;
 		
 		
 		
@@ -34,13 +40,19 @@ public class GameWindow {
 			window.add(board);
 			window.setVisible(true);
 			window.addKeyListener(board);
+			
+		
 		}
 		
 		
 		
 		//main method
-		public static void main(String[] args) {
+		public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+			Sounds sound = new Sounds();
+			sound.music();
 			new GameWindow();
+			
+			
 		}
 	
 

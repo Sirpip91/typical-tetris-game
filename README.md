@@ -5,3 +5,11 @@ This game will include a typical tetris style of gameplay.
 
 
 Goal: improving my javas coding!
+
+
+A screenshot of the current progress!
+
+Still need to add a start and end screen.
+
+<img src = "assets/typical-tetris-screenshot.png" width= "500" >
+
